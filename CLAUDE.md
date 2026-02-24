@@ -27,8 +27,8 @@ This file defines the coding standards and conventions for this project. Follow 
   - ✅ `const MAX_BATCH_SIZE = 5`, `const QDRANT_COLLECTION = "media"`
   - ❌ `const maxBatchSize = 5`
 
-- **Classes and Types/Interfaces must be `PascalCase`**
-  - ✅ `class MediaProcessor`, `type UserPayload`, `interface QueueJob`
+- **Classes and Types must be `PascalCase`**
+  - ✅ `class MediaProcessor`, `type UserPayload`, `type QueueJob`
   - ❌ `class mediaProcessor`, `type user_payload`
 
 ---
@@ -120,14 +120,14 @@ This file defines the coding standards and conventions for this project. Follow 
   const getMedia = async (id: string): Promise<MediaFile | null> => { ... };
   ```
 
-- **Prefer `interface` for object shapes** and `type` for unions/aliases.
+- **Always use `type`** for all type definitions — object shapes, unions, and aliases.
 
   ```ts
-  interface MediaFile {
+  type MediaFile = {
     id: string;
     filePath: string;
     createdAt: Date;
-  }
+  };
 
   type MediaStatus = "pending" | "processing" | "done" | "failed";
   ```
