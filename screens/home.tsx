@@ -8,10 +8,10 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 items-center justify-center bg-background px-8">
       <Text className="text-2xl font-bold text-foreground mb-2">
-        {user?.firstName ? `Hey, ${user.firstName}` : 'Home'}
+        {user?.displayName ? `Hey, ${user.displayName.split(' ')[0]}` : 'Home'}
       </Text>
       <Text className="text-muted-foreground mb-2">
-        {user?.primaryEmailAddress?.emailAddress}
+        {user?.email}
       </Text>
       <Text className="text-xs text-muted-foreground mb-10 text-center" numberOfLines={3}>
         {token ?? 'No token'}

@@ -12,9 +12,10 @@ import {
 } from 'react-native';
 
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { useUser } from '@clerk/clerk-expo';
 import * as MediaLibrary from 'expo-media-library';
 
+import { useFirebaseAuth } from '@/context/auth-context';
+import { api } from '@/lib/api';
 import { useOnboarding } from '@/hooks/use-onboarding';
 
 const MAX_DATE = new Date();
@@ -30,20 +31,18 @@ const formatDate = (date: Date): string => {
 };
 
 const OnboardingScreen = () => {
-  const { user } = useUser();
+  const { user } = useFirebaseAuth();
   const { completeOnboarding } = useOnboarding();
 
   const [step, setStep] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
 
-  const [name, setName] = useState(
-    [user?.firstName, user?.lastName].filter(Boolean).join(' '),
-  );
+  const [name, setName] = useState(user?.displayName ?? '');
   const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const email = user?.primaryEmailAddress?.emailAddress ?? '';
+  const email = user?.email ?? '';
 
   const onDateChange = (_event: DateTimePickerEvent, selectedDate?: Date): void => {
     if (Platform.OS === 'android') {
@@ -62,13 +61,10 @@ const OnboardingScreen = () => {
       const firstName = spaceIdx > -1 ? trimmed.slice(0, spaceIdx) : trimmed;
       const lastName = spaceIdx > -1 ? trimmed.slice(spaceIdx + 1) : '';
 
-      await user?.update({
-        firstName,
-        lastName: lastName || undefined,
-        unsafeMetadata: {
-          ...user.unsafeMetadata,
-          dateOfBirth: dateOfBirth?.toISOString() ?? null,
-        },
+      await api.patch('/user/me', {
+        first_name: firstName,
+        last_name: lastName || undefined,
+        date_of_birth: dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : undefined,
       });
 
       setStep(2);

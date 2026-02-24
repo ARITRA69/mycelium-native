@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "874258531065",
+    "project_id": "mycelium-a6350",
+    "storage_bucket": "mycelium-a6350.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874258531065:android:0dfb9a11d20135e9879828",
+        "android_client_info": {
+          "package_name": "com.aritra69.myceliumnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874258531065-8scld02unqljk97ooddhkl740e339le9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAub0ETdHXEAfUA_9BP7vNEtv0zaw6icoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874258531065-8scld02unqljk97ooddhkl740e339le9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

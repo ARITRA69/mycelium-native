@@ -3,6 +3,7 @@
     "name": "mycelium-native",
     "slug": "mycelium-native",
     "version": "1.0.0",
+    "scheme": "mycelium",
     "web": {
       "favicon": "./assets/favicon.png"
     },

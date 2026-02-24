@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 
-import { useAuth as useClerkAuth, useClerk, useSSO, useUser } from '@clerk/clerk-expo';
+import { GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, type User } from 'firebase/auth';
+import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { api, setTokenGetter } from '@/lib/api';
+import { firebaseAuth } from '@/lib/firebase';
+import { useFirebaseAuth } from '@/context/auth-context';
+import { env } from '@/constants/env';
+
 
 WebBrowser.maybeCompleteAuthSession();
 
 type UseAuthReturn = {
-  user: ReturnType<typeof useUser>['user'];
+  user: User | null;
   isLoading: boolean;
   token: string | null;
   signInWithGoogle: () => Promise<void>;
@@ -16,38 +21,38 @@ type UseAuthReturn = {
 };
 
 const useAuth = (): UseAuthReturn => {
-  const { startSSOFlow } = useSSO();
-  const { signOut: clerkSignOut } = useClerk();
-  const { user } = useUser();
-  const { getToken } = useClerkAuth();
+  const { user } = useFirebaseAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
-  // Register getToken once on mount so the API interceptor always has it
-  setTokenGetter(getToken);
+  const [_request, _response, promptAsync] = Google.useAuthRequest({
+    webClientId: env.googleWebClientId,
+  });
 
   useEffect(() => {
     if (user) {
-      getToken().then(setToken);
+      user.getIdToken().then(setToken);
     }
-  }, [user, getToken]);
+  }, [user]);
 
   const signInWithGoogle = async (): Promise<void> => {
     try {
       setIsLoading(true);
+      const result = await promptAsync();
 
-      const { createdSessionId, setActive } = await startSSOFlow({
-        strategy: 'oauth_google',
-      });
+      if (result.type === 'success') {
+        const { id_token } = result.params;
+        const credential = GoogleAuthProvider.credential(id_token);
+        const userCredential = await signInWithCredential(firebaseAuth, credential);
 
-      if (createdSessionId && setActive) {
-        await setActive({ session: createdSessionId });
+        // Ensure token getter is set before the backend sync call
+        setTokenGetter(() => userCredential.user.getIdToken());
 
         try {
           await api.get('/user/me');
         } catch (err) {
           console.error('User sync failed, rolling back session:', err);
-          await clerkSignOut();
+          await firebaseSignOut(firebaseAuth);
         }
       }
     } catch (err) {
@@ -58,7 +63,7 @@ const useAuth = (): UseAuthReturn => {
   };
 
   const signOut = async (): Promise<void> => {
-    await clerkSignOut();
+    await firebaseSignOut(firebaseAuth);
   };
 
   return { user, isLoading, token, signInWithGoogle, signOut };
