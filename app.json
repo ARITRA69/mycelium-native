@@ -17,7 +17,9 @@
           "photosPermission": "Allow Mycelium to access your photos and videos.",
           "savePhotosPermission": "Allow Mycelium to save photos.",
           "isAccessMediaLocationEnabled": true
-        },
+        }
+      ],
+      [
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.1097576291880-3mfcm7hpu20i46k26mg8hnfvbdfm9k4t"
