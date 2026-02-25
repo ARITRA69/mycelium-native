@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mycelium-native",
-    "slug": "mycelium-native",
+    "name": "mycelium",
+    "slug": "mycelium",
     "version": "1.0.0",
     "scheme": "mycelium",
     "web": {
@@ -17,6 +17,10 @@
           "photosPermission": "Allow Mycelium to access your photos and videos.",
           "savePhotosPermission": "Allow Mycelium to save photos.",
           "isAccessMediaLocationEnabled": true
+        },
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1097576291880-3mfcm7hpu20i46k26mg8hnfvbdfm9k4t"
         }
       ]
     ],
@@ -32,6 +36,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.aritra69.mycelium",
       "supportsTablet": true
     },
     "android": {
@@ -49,7 +54,7 @@
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO"
       ],
-      "package": "com.aritra69.myceliumnative"
+      "package": "com.aritra69.mycelium"
     },
     "extra": {
       "eas": {

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, type User } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  signInWithCredential,
+  signOut as firebaseSignOut,
+  type User,
+} from 'firebase/auth';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -8,7 +13,6 @@ import { api, setTokenGetter } from '@/lib/api';
 import { firebaseAuth } from '@/lib/firebase';
 import { useFirebaseAuth } from '@/context/auth-context';
 import { env } from '@/constants/env';
-
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -27,6 +31,7 @@ const useAuth = (): UseAuthReturn => {
 
   const [_request, _response, promptAsync] = Google.useAuthRequest({
     webClientId: env.googleWebClientId,
+    androidClientId: env.googleWebClientId,
   });
 
   useEffect(() => {
