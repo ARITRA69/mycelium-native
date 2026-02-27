@@ -100,6 +100,41 @@ This file defines the coding standards and conventions for this project. Follow 
 
 ---
 
+## Styling
+
+- **Always use NativeWind (Tailwind CSS) `className` for all styling** — never use `StyleSheet.create()` or raw inline `style` props for static values
+
+  ```tsx
+  // ✅ Correct
+  <View className="flex-1 items-center justify-center bg-background px-6" />
+
+  // ❌ Avoid
+  <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#0a0a0f', paddingHorizontal: 24 }} />
+  ```
+
+- **Design tokens** are defined in `tailwind.config.js` — always prefer them over raw colour values:
+  - `bg-background`, `bg-primary`, `bg-glass`, `bg-muted`
+  - `text-foreground`, `text-muted-foreground`, `text-primary`
+  - `border-border`
+
+- **Opacity modifiers** instead of hard-coded rgba for theme colours: `bg-primary/40`, `text-white/50`, `bg-black/60`
+
+- **Arbitrary values** are allowed when no design token exists: `text-[13px]`, `bg-[rgba(14,14,22,0.94)]`, `mt-px`
+
+- **Exception — dynamic runtime values only:** `style` prop is allowed **only** for values that cannot be expressed as static classes, such as values derived from `useSafeAreaInsets()` or other runtime state
+
+  ```tsx
+  // ✅ Static classes + only the dynamic part in style
+  <View className="absolute left-6 right-6" style={{ bottom: insets.bottom + 16 }} />
+
+  // ❌ Don't put static values in style
+  <View style={{ position: 'absolute', left: 24, right: 24, bottom: insets.bottom + 16 }} />
+  ```
+
+- **FlatList props** (`contentContainerStyle`, `columnWrapperStyle`) do not accept `className` — pass plain objects for these only
+
+---
+
 ## Database & Schema
 
 - **All database column names and schema fields must be `snake_case`** (Prisma / PostgreSQL convention)

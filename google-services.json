@@ -1,33 +1,40 @@
 {
   "project_info": {
-    "project_number": "874258531065",
-    "project_id": "mycelium-a6350",
-    "storage_bucket": "mycelium-a6350.firebasestorage.app"
+    "project_number": "1097576291880",
+    "project_id": "mycelium-488409"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:874258531065:android:0dfb9a11d20135e9879828",
+        "mobilesdk_app_id": "1:1097576291880:android:abcdef0123456789",
         "android_client_info": {
           "package_name": "com.aritra69.mycelium"
         }
       },
       "oauth_client": [
         {
-          "client_id": "874258531065-8scld02unqljk97ooddhkl740e339le9.apps.googleusercontent.com",
+          "client_id": "1097576291880-u6tcm2hhr86kgoddt95ugrtskasvv52m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aritra69.mycelium",
+            "certificate_hash": "1A:C5:30:CB:43:CF:02:EF:E5:70:C9:6D:BE:0C:15:CF:F0:2B:07:8D"
+          }
+        },
+        {
+          "client_id": "1097576291880-a58t6la5tp912rbmkg7mvo12qvja4qmf.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAub0ETdHXEAfUA_9BP7vNEtv0zaw6icoM"
+          "current_key": "AIzaSyCuro4l_ZrdRsHpG9kH5madmtl7hyiCRs0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "874258531065-8scld02unqljk97ooddhkl740e339le9.apps.googleusercontent.com",
+              "client_id": "1097576291880-a58t6la5tp912rbmkg7mvo12qvja4qmf.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

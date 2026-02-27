@@ -1,49 +1,38 @@
-import { ActivityIndicator, View } from 'react-native';
+import { useState } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { AuthProvider, useFirebaseAuth } from '@/context/auth-context';
-import { useOnboarding } from '@/hooks/use-onboarding';
+import GetStartedScreen from '@/screens/get-started';
 import HomeScreen from '@/screens/home';
-import LoginScreen from '@/screens/login';
 import OnboardingScreen from '@/screens/onboarding';
 
 import './global.css';
 
-const AuthenticatedRoot = () => {
-  const { isLoaded, isOnboardingComplete } = useOnboarding();
-
-  if (!isLoaded) {
-    return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color="#a855f7" size="large" />
-      </View>
-    );
-  }
-
-  return isOnboardingComplete ? <HomeScreen /> : <OnboardingScreen />;
-};
-
-const AppRoot = () => {
-  const { user, isLoaded } = useFirebaseAuth();
-
-  if (!isLoaded) {
-    return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color="#a855f7" size="large" />
-      </View>
-    );
-  }
-
-  return user ? <AuthenticatedRoot /> : <LoginScreen />;
-};
+type Screen = 'get-started' | 'onboarding' | 'home';
 
 const App = () => {
+  const [screen, setScreen] = useState<Screen>('get-started');
+
+  const renderScreen = () => {
+    if (screen === 'home') return <HomeScreen />;
+    if (screen === 'onboarding') return <OnboardingScreen onComplete={() => setScreen('home')} />;
+    return (
+      <GetStartedScreen
+        onNavigateToOnboarding={() => setScreen('onboarding')}
+        onNavigateToHome={() => setScreen('home')}
+      />
+    );
+  };
+
   return (
-    <AuthProvider>
-      <AppRoot />
-      <StatusBar style="light" />
-    </AuthProvider>
+    <GestureHandlerRootView className="flex-1">
+      <SafeAreaProvider>
+        {renderScreen()}
+        <StatusBar style="light" />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 
