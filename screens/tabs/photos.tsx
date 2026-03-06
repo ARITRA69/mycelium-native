@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, NativeScrollEvent, NativeSyntheticEvent, Text, View } from 'react-native';
 import type { ListRenderItemInfo } from '@shopify/flash-list';
 import { FlashList } from '@shopify/flash-list';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -10,10 +10,13 @@ import { Header } from '@/components/header';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const MIN_COLUMNS = 3;
 const MAX_COLUMNS = 8;
-// How far scale must deviate from the last-snapped baseline to trigger a column change
 const PINCH_STEP = 0.3;
 
 const getItemSize = (columns: number) => SCREEN_WIDTH / columns;
+
+type PhotosTabProps = {
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+};
 
 const renderPhoto = (columns: number) =>
   ({ item }: ListRenderItemInfo<MediaLibrary.Asset>) => {
@@ -25,7 +28,7 @@ const renderPhoto = (columns: number) =>
     );
   };
 
-export const PhotosTab = () => {
+export const PhotosTab = ({ onScroll }: PhotosTabProps) => {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [columns, setColumns] = useState(3);
@@ -107,6 +110,8 @@ export const PhotosTab = () => {
           keyExtractor={(item) => item.id}
           renderItem={renderPhoto(columns)}
           showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         />
       </View>
     </GestureDetector>

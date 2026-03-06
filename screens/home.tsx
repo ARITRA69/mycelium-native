@@ -83,7 +83,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      {activeTab === 'photos' && <PhotosTab />}
+      {activeTab === 'photos' && <PhotosTab onScroll={handleScroll} />}
       {activeTab === 'albums' && <AlbumsTab />}
       {activeTab === 'folders' && <FoldersTab onScroll={handleScroll} />}
 
