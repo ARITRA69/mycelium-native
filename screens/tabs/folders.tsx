@@ -18,6 +18,9 @@ import { Header } from '@/components/header';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
+import { useSyncFolder } from '@/hooks/use-sync-folder';
+import { useWatchedFolders } from '@/hooks/use-watched-folders';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const PADDING = 10;
@@ -77,8 +80,12 @@ const FolderDetail = ({ album, onBack, onScroll }: FolderDetailProps) => {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [coverUri, setCoverUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [syncEnabled, setSyncEnabled] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const { state, startSync, cancelSync } = useSyncFolder();
+  const { isWatched, addFolder, removeFolder } = useWatchedFolders();
+  const isSyncing = state.status === 'syncing';
+  const syncEnabled = isWatched(album.id);
 
   useEffect(() => {
     MediaLibrary.getAssetsAsync({
@@ -106,6 +113,16 @@ const FolderDetail = ({ album, onBack, onScroll }: FolderDetailProps) => {
     { useNativeDriver: false, listener: onScroll },
   );
 
+  const handleSyncToggle = (enabled: boolean) => {
+    if (enabled) {
+      addFolder(album.id);
+      startSync(album);
+    } else {
+      removeFolder(album.id);
+      cancelSync();
+    }
+  };
+
   return (
     <View className="flex-1">
       <Animated.View style={{ height: headerHeight }} className="overflow-hidden">
@@ -124,14 +141,52 @@ const FolderDetail = ({ album, onBack, onScroll }: FolderDetailProps) => {
               {album.title}
             </Text>
           </TouchableOpacity>
-          <Switch
-            value={syncEnabled}
-            onValueChange={setSyncEnabled}
-            trackColor={{ false: '#3f3f46', true: '#a855f7' }}
-            thumbColor="#ffffff"
-          />
+          <View className="flex-row items-center gap-2">
+            {isSyncing && <ActivityIndicator color="#a855f7" size="small" />}
+            <Switch
+              value={syncEnabled}
+              onValueChange={handleSyncToggle}
+              disabled={isSyncing}
+              trackColor={{ false: '#3f3f46', true: '#a855f7' }}
+              thumbColor="#ffffff"
+            />
+          </View>
         </View>
       </Animated.View>
+
+      {state.status === 'syncing' && (
+        <View className="mx-4 mt-3 p-3 rounded-xl bg-glass">
+          <View className="flex-row justify-between mb-1">
+            <Text className="text-foreground/70 text-[12px]" numberOfLines={1}>
+              {state.currentFilename || 'Preparing…'}
+            </Text>
+            <Text className="text-foreground/50 text-[12px]">
+              {state.current}/{state.total}
+            </Text>
+          </View>
+          <View className="h-1 rounded-full bg-white/10 overflow-hidden">
+            <View
+              className="h-full bg-primary rounded-full"
+              style={{ width: state.total > 0 ? `${(state.current / state.total) * 100}%` : '0%' }}
+            />
+          </View>
+        </View>
+      )}
+
+      {state.status === 'done' && (
+        <View className="mx-4 mt-3 p-3 rounded-xl bg-glass flex-row items-center gap-2">
+          <Text className="text-primary text-[13px] font-semibold">Sync complete</Text>
+          <Text className="text-foreground/60 text-[12px]">
+            {state.uploaded} uploaded · {state.skipped} already synced · {state.failed} failed
+          </Text>
+        </View>
+      )}
+
+      {state.status === 'error' && (
+        <View className="mx-4 mt-3 p-3 rounded-xl bg-red-500/20">
+          <Text className="text-red-400 text-[13px]">{state.message}</Text>
+        </View>
+      )}
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
