@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -14,6 +15,12 @@ type Screen = 'get-started' | 'onboarding' | 'home';
 
 const App = () => {
   const [screen, setScreen] = useState<Screen>('get-started');
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: process.env.WEB_CLIENT_ID,
+    });
+  }, []);
 
   const renderScreen = () => {
     if (screen === 'home') return <HomeScreen />;
